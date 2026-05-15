@@ -5,6 +5,6 @@ Este repositório contém a API e a modelagem do banco de dados para o catálogo
 
 Abaixo está o Diagrama de Entidade-Relacionamento (DER) que planejei para estruturar a base de dados do projeto, aplicando conceitos de chaves estrangeiras e normalização:
 
-![Diagrama do Banco de Dados](assets/Diagrama_crud_bc.drawio.png)
+![Diagrama do Banco de Dados](assets/Diagrama_crud_bc.png)
 
 > O banco de dados foi projetado no MySQL, levando em consideração regras específicas do universo de Black Clover, como raças secundárias e posses de espíritos.
