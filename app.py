@@ -26,6 +26,8 @@ def listar_personagens():
     try:
         nome = request.args.get('nome', '')
         magia = request.args.get('magia', '')
+        local = request.args.get('local', '')
+        esquadrao = request.args.get('esquadrao', '')
         
         conexao = conectar_banco()
         cursor = conexao.cursor(dictionary=True)
@@ -38,15 +40,21 @@ def listar_personagens():
                 p.id_raca, p.id_raca_secundaria, p.id_local_origem,
                 e.nome AS nome_esquadrao,
                 r.nome AS nome_raca,
-                l.nome AS nome_local
+                l.nome AS nome_local,
+                esp.nome AS nome_espirito
             FROM personagens p
             LEFT JOIN esquadroes e ON p.id_esquadrao = e.id
             LEFT JOIN racas r ON p.id_raca = r.id
             LEFT JOIN locais l ON p.id_local_origem = l.id
-            WHERE p.nome LIKE %s AND p.tipo_magia LIKE %s
+            LEFT JOIN espiritos esp ON p.id_espirito = esp.id
+            WHERE p.nome LIKE %s
+                AND p.tipo_magia LIKE %s
+                AND l.nome LIKE %s
+                AND IFNULL(e.nome, '') LIKE %s
+            ORDER BY p.nome ASC
         """
         
-        cursor.execute(sql, (f"%{nome}%", f"%{magia}%"))
+        cursor.execute(sql, (f"%{nome}%", f"%{magia}%", f"%{local}%", f"%{esquadrao}%"))
         lista_de_personagens = cursor.fetchall()
         
         cursor.close()
