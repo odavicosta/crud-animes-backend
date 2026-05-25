@@ -34,10 +34,10 @@ e a modelagem do banco de dados relacional, lidando com chaves estrangeiras comp
 
 ## Como rodar o projeto localmente (Setup)
 **1. Clone esse repositório**
-git clone [https://github.com/odavicosta/crud-animes-backend.git](https://github.com/odavicosta/crud-animes-backend.git)
-cd crud-animes-backend
 
-**2. Crie e ative o ambiente virtual**
+**2. Abra a pasta do projeto**
+
+**3. Crie e ative o ambiente virtual**
 
 No Linux/Mac:
 python3 -m venv venv
@@ -47,10 +47,10 @@ No Windows:
 python -m venv venv
 venv\Scripts\activate
 
-**3. Instale as dependências**
+**4. Instale as dependências**
 pip install -r requirements.txt
 
-**4. Configure as Variáveis de Ambiente**
+**5. Configure as Variáveis de Ambiente**
 Por questões de segurança, a senha do banco de dados em nuvem não está exposta. Para que a API consiga se conectar ao banco
 localmente, você precisa definir a variável de ambiente no seu terminal antes de executar o projeto.
 
@@ -66,7 +66,7 @@ $env:DB_PASSWORD="senha_do_banco_aqui"
 Essa variável vale apenas para a sessão atual do terminal. Se fechar e 
 abrir um novo, precisará defini-la novamente antes de rodar o projeto.
 
-**5. Execute a aplicação**
+**6. Execute a aplicação**
 python3 app.py
 
 A API estará rodando em http://127.0.0.1:5000.
