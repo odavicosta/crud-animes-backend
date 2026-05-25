@@ -33,7 +33,7 @@ e a modelagem do banco de dados relacional, lidando com chaves estrangeiras comp
 ?nome=&magia=&local=&esquadrao=
 
 ## Como rodar o projeto localmente (Setup)
-**1. Clone o repositório**
+**1. Clone esse repositório**
 git clone [https://github.com/odavicosta/crud-animes-backend.git](https://github.com/odavicosta/crud-animes-backend.git)
 cd crud-animes-backend
 
