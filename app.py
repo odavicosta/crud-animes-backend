@@ -1,17 +1,43 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from functools import wraps
 import mysql.connector
+import hmac
 import os
 
 app = Flask(__name__)
+app.config["MAX_CONTENT_LENGTH"] = 1024 * 1024  # 1 MB
 
 CORS(app, resources={
     r"/*": {
         "origins": "*",
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type"]
+        "allow_headers": ["Content-Type", "Authorization"]
     }
 })
+
+# Sem ADMIN_TOKEN definido, as rotas de escrita recusam tudo (nunca liberam)
+ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "").strip()
+if not ADMIN_TOKEN:
+    print("AVISO: ADMIN_TOKEN não definido — POST, PUT e DELETE vão responder 401.")
+
+
+def requer_token(rota):
+    @wraps(rota)
+    def verificar(*args, **kwargs):
+        recebido = request.headers.get("Authorization", "")
+        esperado = f"Bearer {ADMIN_TOKEN}"
+        if not ADMIN_TOKEN or not hmac.compare_digest(recebido.encode(), esperado.encode()):
+            return jsonify({"erro": "Não autorizado"}), 401
+        return rota(*args, **kwargs)
+    return verificar
+
+
+@app.before_request
+def limitar_tamanho():
+    # Responde 413 antes da rota; senão o except genérico das rotas transformaria em 500
+    if request.content_length and request.content_length > app.config["MAX_CONTENT_LENGTH"]:
+        return jsonify({"erro": "Requisição grande demais"}), 413
 
 def conectar_banco():
     return mysql.connector.connect(
@@ -70,6 +96,7 @@ def listar_personagens():
 
 
 @app.route('/personagens', methods=['POST'])
+@requer_token
 def criar_personagem():
     try:
         dados = request.get_json()
@@ -111,6 +138,7 @@ def criar_personagem():
 
 
 @app.route('/personagens/<int:id>', methods=['PUT'])
+@requer_token
 def atualizar_personagem(id):
     try:
         dados = request.get_json()
@@ -155,6 +183,7 @@ def atualizar_personagem(id):
 
 
 @app.route('/personagens/<int:id>', methods=['DELETE'])
+@requer_token
 def deletar_personagem(id):
     try:
         conexao = conectar_banco()
