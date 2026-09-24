@@ -39,14 +39,38 @@ def limitar_tamanho():
     if request.content_length and request.content_length > app.config["MAX_CONTENT_LENGTH"]:
         return jsonify({"erro": "Requisição grande demais"}), 413
 
+
+# Configuração do banco só por variável de ambiente; se faltar alguma, a app nem sobe
+VARIAVEIS_BANCO = ["DB_HOST", "DB_PORT", "DB_USER", "DB_PASSWORD", "DB_NAME"]
+faltando = [nome for nome in VARIAVEIS_BANCO if not os.getenv(nome, "").strip()]
+if faltando:
+    raise RuntimeError(f"Variáveis de ambiente do banco não definidas: {', '.join(faltando)}")
+
+try:
+    porta_banco = int(os.getenv("DB_PORT"))
+except ValueError:
+    raise RuntimeError(f"DB_PORT precisa ser um número, recebido: {os.getenv('DB_PORT')!r}")
+
+CONFIG_BANCO = {
+    "host": os.getenv("DB_HOST").strip(),
+    "port": porta_banco,
+    "user": os.getenv("DB_USER").strip(),
+    "password": os.getenv("DB_PASSWORD"),
+    "database": os.getenv("DB_NAME").strip(),
+}
+
+# Opcional: com DB_SSL_CA, o certificado do servidor é verificado contra a CA do Aiven
+caminho_ca = os.getenv("DB_SSL_CA", "").strip()
+if caminho_ca:
+    if not os.path.isfile(caminho_ca):
+        raise RuntimeError(f"DB_SSL_CA aponta para um arquivo que não existe: {caminho_ca}")
+    CONFIG_BANCO.update(ssl_ca=caminho_ca, ssl_verify_cert=True)
+else:
+    print("AVISO: DB_SSL_CA não definido — conexão com o banco sem verificar o certificado.")
+
+
 def conectar_banco():
-    return mysql.connector.connect(
-        host="crud-black-clover-crudblackclover.j.aivencloud.com",
-        user="avnadmin",
-        password=os.getenv("DB_PASSWORD"),
-        database="defaultdb",
-        port=28790
-    )
+    return mysql.connector.connect(**CONFIG_BANCO)
 
 
 @app.route('/personagens', methods=['GET'])
