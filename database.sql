@@ -35,7 +35,6 @@ id INT AUTO_INCREMENT PRIMARY KEY,
     id_raca_secundaria INT,
     id_local_origem INT NOT NULL,
     
-    eh_portador_atual BOOLEAN DEFAULT FALSE,
     eh_nobre BOOLEAN DEFAULT FALSE,
     eh_portador_demoniaco BOOLEAN DEFAULT FALSE,
     

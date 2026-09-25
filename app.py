@@ -133,7 +133,6 @@ def criar_personagem():
         id_raca_secundaria = dados.get('id_raca_secundaria')
         id_local_origem = dados.get('id_local_origem')
         
-        eh_portador_atual = dados.get('eh_portador_atual', False)
         eh_nobre = dados.get('eh_nobre', False)
         eh_portador_demoniaco = dados.get('eh_portador_demoniaco', False)
         
@@ -142,11 +141,11 @@ def criar_personagem():
         
         sql = """INSERT INTO personagens 
                  (nome, tipo_magia, id_esquadrao, id_espirito, id_raca, 
-                 id_raca_secundaria, id_local_origem, eh_portador_atual, eh_nobre, eh_portador_demoniaco) 
-                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+                 id_raca_secundaria, id_local_origem, eh_nobre, eh_portador_demoniaco) 
+                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
                  
         valores = (nome, tipo_magia, id_esquadrao, id_espirito, id_raca, 
-                   id_raca_secundaria, id_local_origem, eh_portador_atual, eh_nobre, eh_portador_demoniaco)
+                   id_raca_secundaria, id_local_origem, eh_nobre, eh_portador_demoniaco)
         
         cursor.execute(sql, valores)
         conexao.commit()
@@ -174,7 +173,6 @@ def atualizar_personagem(id):
         id_raca = dados.get('id_raca')
         id_raca_secundaria = dados.get('id_raca_secundaria')
         id_local_origem = dados.get('id_local_origem')
-        eh_portador_atual = dados.get('eh_portador_atual', False)
         eh_nobre = dados.get('eh_nobre', False)
         eh_portador_demoniaco = dados.get('eh_portador_demoniaco', False)
         
@@ -185,12 +183,12 @@ def atualizar_personagem(id):
             UPDATE personagens SET
                 nome = %s, tipo_magia = %s, id_esquadrao = %s, id_espirito = %s,
                 id_raca = %s, id_raca_secundaria = %s, id_local_origem = %s,
-                eh_portador_atual = %s, eh_nobre = %s, eh_portador_demoniaco = %s
+                eh_nobre = %s, eh_portador_demoniaco = %s
             WHERE id = %s
         """
                  
         valores = (nome, tipo_magia, id_esquadrao, id_espirito, id_raca, 
-                   id_raca_secundaria, id_local_origem, eh_portador_atual, 
+                   id_raca_secundaria, id_local_origem, 
                    eh_nobre, eh_portador_demoniaco, id)
         
         cursor.execute(sql, valores)
